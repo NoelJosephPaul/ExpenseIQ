@@ -1,0 +1,63 @@
+# Built application files
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.war
+*.ear
+*.so
+*.dylib
+*.exe
+*.dll
+*.swp
+*.lock
+*.log
+*.out
+
+# Gradle files
+.gradle/
+build/
+local.properties
+
+# Android Studio files
+/.idea/
+/.idea/caches/
+/.idea/libraries/
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# Kotlin files
+*.kotlin_module
+*.metadata
+
+# Other IDE-specific files
+.DS_Store
+*.iml
+
+# Miscellaneous files
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Gradle Wrapper
+gradle-wrapper.jar
+gradle-wrapper.properties
+
+# Dependency caches
+**/build/
+**/bin/
+**/obj/
+**/.gradle/
+
+# Android specific files
+.idea/.name
+.idea/misc.xml
+.idea/vcs.xml
+
+# User-specific files
+*.iml
+*.hprof
+*.stacktrace

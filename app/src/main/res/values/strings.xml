@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ExpenseIQ</string>
+    <string name="edit_categories">Edit Categories</string>
+</resources>
