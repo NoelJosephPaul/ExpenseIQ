@@ -2,11 +2,9 @@ package com.example.expenseiq
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color.rgb
 import android.os.Bundle
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.NumberPicker
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -18,7 +16,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,13 +35,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -56,7 +54,7 @@ import java.util.*
 class MainActivity : ComponentActivity() {
     private lateinit var db: AppDatabase
 
-    private var totalExpense by mutableStateOf(0f)
+    private var totalExpense by mutableFloatStateOf(0f)
     private var categories by mutableStateOf(listOf<String>())
     private var categoryTotals by mutableStateOf(mapOf<String, Float>())
     private var transactionsMap by mutableStateOf(mapOf<String, List<Transaction>>())
@@ -66,6 +64,31 @@ class MainActivity : ComponentActivity() {
         SimpleDateFormat("MMMM, yyyy", Locale.getDefault()).format(
             SimpleDateFormat("MM/yyyy", Locale.getDefault()).parse(selectedMonthYear) ?: Date()
         )
+    }
+
+    companion object {
+        private const val REQUEST_SMS_PERMISSION = 1001 // Define the request code
+        private const val REQUEST_CODE_PENDING_PAYMENTS = 1
+        private const val REQUEST_CODE_EDIT_CATEGORIES = 2 // Define a request code constant
+    }
+
+    private fun requestSmsPermissions() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.RECEIVE_SMS), REQUEST_SMS_PERMISSION)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_SMS_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+            } else {
+                // Permission denied
+            }
+        }
     }
 
 
@@ -84,6 +107,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 MainScreen(context = this)
             }
+            requestSmsPermissions()
         }
     }
 
@@ -139,7 +163,7 @@ class MainActivity : ComponentActivity() {
                         "Menu",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp)
+                        modifier = Modifier.padding(top=20.dp, bottom = 50.dp).padding(horizontal = 16.dp)
                     )
                     TextButton(
                         onClick = {
@@ -159,7 +183,7 @@ class MainActivity : ComponentActivity() {
                         Text(
                             "Edit Categories",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
-                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 35.dp),
+                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 0.dp),
                             color = Color.Black
                         )
                     }
@@ -291,7 +315,7 @@ class MainActivity : ComponentActivity() {
                             textAlign = TextAlign.Center
                         )
                     } else {
-                        LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 20.dp)) {
                             items(categoryTotals.toList()) { (category, total) ->
                                 var isExpanded by remember { mutableStateOf(false) }
 
@@ -487,8 +511,8 @@ class MainActivity : ComponentActivity() {
         val initialYear = currentMonthYear[1].toInt()
         val initialMonth = currentMonthYear[0].toInt() - 1 // Convert to zero-based month
 
-        var month by remember { mutableStateOf(initialMonth) }
-        var year by remember { mutableStateOf(initialYear) } // Store year as Int
+        var month by remember { mutableIntStateOf(initialMonth) }
+        var year by remember { mutableIntStateOf(initialYear) } // Store year as Int
 
         // List of month names
         val monthNames = listOf(
@@ -578,10 +602,10 @@ class MainActivity : ComponentActivity() {
         startActivityForResult(intent, REQUEST_CODE_PENDING_PAYMENTS)
     }
 
-    companion object {
+    /*companion object {
         private const val REQUEST_CODE_PENDING_PAYMENTS = 1
         private const val REQUEST_CODE_EDIT_CATEGORIES = 2 // Define a request code constant
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -606,7 +630,7 @@ class MainActivity : ComponentActivity() {
 
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Add Payment") },
+            title = { Text("Add Expense") },
             text = {
                 Column {
                     TextField(
@@ -697,13 +721,17 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun CategorySelectionDialog(categories: List<String>, onSelectCategory: (String) -> Unit, onDismiss: () -> Unit) {
+    fun CategorySelectionDialog(
+        categories: List<String>,
+        onSelectCategory: (String) -> Unit,
+        onDismiss: () -> Unit
+    ) {
         AlertDialog(
             onDismissRequest = onDismiss,
             title = { Text("Select Category") },
             text = {
-                Column {
-                    categories.forEach { category ->
+                LazyColumn {
+                    items(categories) { category ->
                         TextButton(onClick = { onSelectCategory(category) }) {
                             Text(category)
                         }

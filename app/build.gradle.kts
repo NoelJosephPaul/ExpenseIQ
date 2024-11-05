@@ -65,6 +65,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.5.1")
     implementation(libs.material)
     ksp("androidx.room:room-compiler:2.5.1")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.34.0")
 
     // Test dependencies
     testImplementation(libs.junit)
