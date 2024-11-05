@@ -5,6 +5,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.0.21-1.0.25" // Use a valid KSP plugin ID and version
 }
 
+
 android {
     namespace = "com.example.expenseiq"
     compileSdk = 34
@@ -60,11 +61,17 @@ dependencies {
     implementation ("androidx.compose.ui:ui:<version>")
     implementation ("androidx.compose.material:material:<version>")
     implementation ("androidx.compose.ui:ui-tooling-preview:<version>")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    implementation (libs.mpandroidchart)
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation("androidx.room:room-runtime:2.5.1")
     implementation("androidx.room:room-ktx:2.5.1")
     implementation(libs.material)
     ksp("androidx.room:room-compiler:2.5.1")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:0.34.0")
+
 
     // Test dependencies
     testImplementation(libs.junit)

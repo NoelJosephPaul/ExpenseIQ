@@ -38,9 +38,6 @@ interface TransactionDao {
     @Query("SELECT SUM(amount) FROM transactions")
     suspend fun getTotalExpenses(): Float? // Return nullable Float to handle cases with no transactions
 
-    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId")
-    suspend fun getTransactionsByCategory(categoryId: Long): List<Transaction>
-
     @Query("SELECT SUM(amount) FROM transactions WHERE SUBSTR(date, 4,7) = :currentMonthYear")
     suspend fun getCurrentMonthTotalExpenses(currentMonthYear: String): Float
 
@@ -56,18 +53,36 @@ interface TransactionDao {
     @Query("UPDATE transactions SET amount = :amount WHERE id = :id")
     suspend fun updateTransactionAmount(id: Long, amount: Float)
 
-    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId AND SUBSTR(date, 4,7) = :currentMonthYear")
+    @Query("SELECT * FROM transactions WHERE categoryId = :categoryId AND SUBSTR(date, 4,7) = :currentMonthYear ORDER BY date DESC")
     suspend fun getTransactionsByCategoryAndMonth(categoryId: Long, currentMonthYear: String): List<Transaction>
+
+
+
+    @Query("SELECT SUM(amount) FROM transactions WHERE SUBSTR(date, 4,7) = :monthYear")
+    suspend fun getTotalExpensesForMonth(monthYear: String): Float
+
+    @Query("SELECT COUNT(DISTINCT date) FROM transactions WHERE SUBSTR(date, 4,7) = :monthYear")
+    suspend fun getDaysInMonth(monthYear: String): Int
+
+    @Query("SELECT SUM(amount) AS total FROM transactions WHERE SUBSTR(date, 4, 7) = :monthYear GROUP BY date ORDER BY total DESC LIMIT 1")
+    suspend fun getHighestExpenseAmount(monthYear: String): Float
+
+    @Query("SELECT date FROM transactions WHERE SUBSTR(date, 4, 7) = :monthYear GROUP BY date ORDER BY SUM(amount) DESC LIMIT 1")
+    suspend fun getHighestExpenseDate(monthYear: String): String
+
+    @Query("SELECT SUM(amount) FROM transactions")
+    suspend fun getEntireTotalExpenses(): Float
+
 }
 
 
 
 @Dao
 interface PendingPaymentDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPendingPayment(payment: PendingPayment)
+    @Insert
+    suspend fun insertPendingPayment(pendingPayment: PendingPayment)
 
-    @Query("SELECT * FROM pending_payments")
+    @Query("SELECT * FROM pending_payments ORDER BY date DESC")
     suspend fun getAllPendingPayments(): List<PendingPayment>
 
     @Query("DELETE FROM pending_payments WHERE id = :paymentId")

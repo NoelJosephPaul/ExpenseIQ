@@ -1,22 +1,26 @@
 package com.example.expenseiq
 
+import android.graphics.Color.rgb
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.example.expenseiq.ui.theme.ExpenseIQTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +53,7 @@ class EditCategoriesActivity : ComponentActivity() {
                     title = { Text("Edit Categories", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)) },
                     navigationIcon = {
                         IconButton(onClick = { finish() }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Go Back")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go Back")
                         }
                     },
                     actions = {
@@ -69,12 +73,20 @@ class EditCategoriesActivity : ComponentActivity() {
                     )
                 } else {
                     // Use LazyColumn for scrolling
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(modifier = Modifier.fillMaxSize().padding(bottom = 20.dp)) {
                         items(categories) { category ->
+                            Box(
+                                modifier = Modifier
+                                    .padding(vertical = 3.dp, horizontal = 16.dp)
+                                    .background(
+                                        Color(rgb(242, 242, 242)),
+                                        shape = MaterialTheme.shapes.small
+                                    )
+                            ){
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(16.dp),
+                                    .padding(horizontal = 10.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -86,7 +98,7 @@ class EditCategoriesActivity : ComponentActivity() {
                                 }) {
                                     Icon(Icons.Default.Delete, contentDescription = "Delete Category")
                                 }
-                            }
+                            }}
                         }
                     }
                 }

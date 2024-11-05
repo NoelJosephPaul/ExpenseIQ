@@ -6,18 +6,6 @@ import androidx.room.ForeignKey
 import org.w3c.dom.Text
 import java.sql.Date
 
-/*@Entity(
-    tableName = "transactions",
-    foreignKeys = [
-        ForeignKey(
-            entity = Category::class,
-            parentColumns = ["id"],
-            childColumns = ["categoryId"],
-            onDelete = ForeignKey.CASCADE // Adjust behavior on delete as necessary
-        )
-    ]
-)*/
-
 @Entity(tableName = "transactions")
 data class Transaction(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

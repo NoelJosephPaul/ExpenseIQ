@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions for receiving and reading SMS -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseIQ"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -19,7 +28,6 @@
             android:theme="@style/Theme.ExpenseIQ">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,6 +38,32 @@
             android:exported="true"
             android:label="@string/edit_categories"
             android:theme="@style/Theme.ExpenseIQ" />
+
+        <!-- New activity for pending payments -->
+        <activity
+            android:name=".PendingPaymentsActivity"
+            android:exported="true"
+            android:label="@string/pending_payments"/>
+
+        <activity
+            android:name=".InsightsActivity"
+            android:exported="true"
+            android:label="@string/insights"/>
+
+        <activity
+            android:name=".AboutActivity"
+            android:exported="true"
+            android:label="@string/about"/>
+
+
+
+        <!-- SMS Receiver -->
+        <receiver android:name=".SmsReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 
