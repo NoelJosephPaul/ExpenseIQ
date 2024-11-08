@@ -46,7 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+<<<<<<< HEAD
 import com.example.expenseiq.ui.theme.ExpenseIQTheme
+=======
+>>>>>>> 0d5890ba138b50b5093544561f1617224b889f17
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -168,9 +171,13 @@ class MainActivity : ComponentActivity() {
                         "Menu",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.primary,
+<<<<<<< HEAD
                         modifier = Modifier
                             .padding(top = 20.dp, bottom = 50.dp)
                             .padding(horizontal = 16.dp)
+=======
+                        modifier = Modifier.padding(top=20.dp, bottom = 50.dp).padding(horizontal = 16.dp)
+>>>>>>> 0d5890ba138b50b5093544561f1617224b889f17
                     )
 
                     // Edit Categories Button
@@ -194,8 +201,13 @@ class MainActivity : ComponentActivity() {
                         Text(
                             "Edit Categories",
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+<<<<<<< HEAD
                             modifier = Modifier.padding(horizontal = 5.dp),
                             color = MaterialTheme.colorScheme.onBackground
+=======
+                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 0.dp),
+                            color = Color.Black
+>>>>>>> 0d5890ba138b50b5093544561f1617224b889f17
                         )
                     }
 

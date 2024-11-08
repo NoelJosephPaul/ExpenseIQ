@@ -45,6 +45,7 @@
             android:exported="true"
             android:label="@string/pending_payments"/>
 
+<<<<<<< HEAD
         <activity
             android:name=".InsightsActivity"
             android:exported="true"
@@ -57,6 +58,8 @@
 
 
 
+=======
+>>>>>>> 0d5890ba138b50b5093544561f1617224b889f17
         <!-- SMS Receiver -->
         <receiver android:name=".SmsReceiver"
             android:exported="true">
