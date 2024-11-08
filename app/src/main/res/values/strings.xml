@@ -2,9 +2,6 @@
     <string name="app_name">ExpenseIQ</string>
     <string name="edit_categories">Edit Categories</string>
     <string name="pending_payments">Pending Payments</string>
-<<<<<<< HEAD
     <string name="insights">Insights</string>
     <string name="about">About</string>"
-=======
->>>>>>> 0d5890ba138b50b5093544561f1617224b889f17
 </resources>
