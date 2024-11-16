@@ -9,7 +9,6 @@ ExpenseIQ is an intuitive expense tracking app designed to help users manage mon
 - **Pending Payments**: View and categorize unlogged expenses from SMS-detected transactions.
 - **Insights and Analytics**: Visual graphs provide monthly spending comparisons and insights.
 - **Category Management**: Allows adding, editing, and deleting expense categories.
-- **Dark and Light Themes**: Adaptive theme support, including dynamic color for Android 12+.
 - **Navigation Drawer and About Page**: Side navigation for quick access to features and app information.
 
 ## Tech Stack
