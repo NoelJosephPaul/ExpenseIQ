@@ -19,12 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.expenseiq.ui.theme.ExpenseIQTheme
 
 class AboutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            ExpenseIQTheme {
                 AboutScreen(onBackPressed = { finish() }) // Pass finish as the back action
             }
         }

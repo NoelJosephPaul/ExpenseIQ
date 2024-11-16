@@ -17,6 +17,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -46,6 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.expenseiq.ui.theme.ExpenseIQTheme
+import com.example.expenseiq.ui.theme.Purple40
+import com.example.expenseiq.ui.theme.Purple80
+import com.example.expenseiq.ui.theme.PurpleGrey40
+import com.example.expenseiq.ui.theme.PurpleGrey80
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -69,6 +76,9 @@ class MainActivity : ComponentActivity() {
             SimpleDateFormat("MM/yyyy", Locale.getDefault()).parse(selectedMonthYear) ?: Date()
         )
     }
+
+
+
 
     companion object {
         private const val REQUEST_SMS_PERMISSION = 1001 // Define the request code
@@ -108,7 +118,7 @@ class MainActivity : ComponentActivity() {
         db = AppDatabase.getDatabase(this)
 
         setContent {
-            MaterialTheme {
+            ExpenseIQTheme {
                 MainScreen(context = this)
             }
             requestSmsPermissions()
@@ -147,6 +157,7 @@ class MainActivity : ComponentActivity() {
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         var showAddPaymentDialog by remember { mutableStateOf(false) }
+        val isDarkMode = isSystemInDarkTheme()
 
         LaunchedEffect(Unit) {
             refreshData()
@@ -256,15 +267,15 @@ class MainActivity : ComponentActivity() {
                         title = { Text("ExpenseIQ", color = MaterialTheme.colorScheme.primary,style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))},
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Menu")
+                                Icon(Icons.Default.Menu, contentDescription = "Menu", tint = if(isDarkMode) Color.White else Color.Black)
                             }
                         },
                         actions = {
                             IconButton(onClick = { showAddPaymentDialog = true }) {
-                                Icon(Icons.Default.Add, contentDescription = "Add Payment")
+                                Icon(Icons.Default.Add, contentDescription = "Add Payment", tint = if(isDarkMode) Color.White else Color.Black)
                             }
                             IconButton(onClick = { navigateToPendingPayments() }) {
-                                Icon(Icons.Default.Notifications, contentDescription = "Pending Payments")
+                                Icon(Icons.Default.Notifications, contentDescription = "Pending Payments", tint = if(isDarkMode) Color.White else Color.Black)
                             }
                         }
                     )
@@ -288,7 +299,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(vertical = 3.dp, horizontal = 16.dp)
                             .background(
-                                Color(rgb(249, 249, 249)),
+                                //Color(rgb(249, 249, 249)),
+                                color = if(isDarkMode) Color.Black else Color(rgb(249, 249, 249)),
                                 shape = MaterialTheme.shapes.small
                             )
                     ) {
@@ -299,7 +311,7 @@ class MainActivity : ComponentActivity() {
                                 fontSize = 30.sp
                             ),
                             //color = MaterialTheme.colorScheme.onBackground,
-                            color = Color.Black,
+                            color = if(isDarkMode) Color.White else Color.Black,
                             modifier = Modifier
                                 .padding(vertical = 8.dp, horizontal = 5.dp)
                                 .clickable {
@@ -311,7 +323,7 @@ class MainActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .padding(vertical = 8.dp, horizontal = 16.dp)
-                            .background(Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
+                            .background(color = if(isDarkMode) PurpleGrey80 else Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
                             .padding(5.dp)
                     ) {
                         Text(
@@ -334,7 +346,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     Box(
                         modifier = Modifier
                             .height(1.dp)
@@ -343,8 +355,8 @@ class MainActivity : ComponentActivity() {
                                 brush = Brush.horizontalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black,
-                                        Color.Black,
+                                        if(isDarkMode) Purple40 else Color.Black,
+                                        if(isDarkMode) Purple40 else Color.Black,
                                         Color.Transparent
                                     ),
                                     startX = 0f,
@@ -361,7 +373,7 @@ class MainActivity : ComponentActivity() {
                             fontSize = 20.sp
                         ),
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(start = 16.dp, top = 10.dp, bottom = 10.dp)
+                        modifier = Modifier.padding(start = 16.dp, top = 20.dp, bottom = 10.dp)
                     )
 
                     if (categoryTotals.isEmpty()) {
@@ -388,7 +400,8 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .padding(vertical = 3.dp, horizontal = 16.dp)
                                             .background(
-                                                Color(rgb(242, 242, 242)),
+                                                if(isDarkMode) Color(rgb(40, 40, 43)) else Color(rgb(242, 242, 242)),
+                                                //Color(rgb(242, 242, 242)),
                                                 shape = MaterialTheme.shapes.small
                                             )
                                             .padding(5.dp)
@@ -407,7 +420,7 @@ class MainActivity : ComponentActivity() {
                                                     fontSize = 17.sp
                                                 ),
                                                 //color = MaterialTheme.colorScheme.onBackground
-                                                color = Color.Black
+                                                color = if(isDarkMode) Color.White else Color.Black
                                             )
                                             Text(
                                                 text = "₹ $total",
@@ -416,7 +429,7 @@ class MainActivity : ComponentActivity() {
                                                     fontSize = 17.sp
                                                 ),
                                                 //color = MaterialTheme.colorScheme.onBackground
-                                                color = Color.Black
+                                                color = if(isDarkMode) Color.White else Color.Black
                                             )
                                         }
                                     }
@@ -510,6 +523,7 @@ class MainActivity : ComponentActivity() {
                                                     AlertDialog(
                                                         onDismissRequest = { isEditing = false },
                                                         title = { Text("Edit Transaction") },
+                                                        containerColor = if (isDarkMode) Color(rgb(40, 40, 40)) else Color(249,249,249),
                                                         text = {
                                                             TextField(
                                                                 value = editAmount,
@@ -536,14 +550,14 @@ class MainActivity : ComponentActivity() {
                                                                     isEditing = false
                                                                 }
                                                             }) {
-                                                                Text("Save")
+                                                                Text("Save",color = if(isDarkMode) Color.White else Purple40)
                                                             }
                                                         },
                                                         dismissButton = {
                                                             TextButton(onClick = {
                                                                 isEditing = false
                                                             }) {
-                                                                Text("Cancel")
+                                                                Text("Cancel",color = if(isDarkMode) Color.White else Purple40)
                                                             }
                                                         }
                                                     )
@@ -587,6 +601,7 @@ class MainActivity : ComponentActivity() {
 
         AlertDialog(
             onDismissRequest = onDismiss,
+            containerColor = if (isSystemInDarkTheme()) Color(rgb(40, 40, 40)) else Color(249,249,249),
             title = { Text("Select Month and Year") },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -651,12 +666,12 @@ class MainActivity : ComponentActivity() {
                     onConfirm(String.format("%02d/%d", selectedMonth, year))
                     onDismiss()
                 }) {
-                    Text("OK")
+                    Text("OK",color = Color.White)
                 }
             },
             dismissButton = {
                 Button(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text("Cancel",color = Color.White )
                 }
             }
         )
@@ -684,18 +699,19 @@ class MainActivity : ComponentActivity() {
         onDismiss: () -> Unit,
         initialCategories: List<String>,
         context: Context,
-        refreshData: () -> Unit // Add this parameter
+        refreshData: () -> Unit, // Add this parameter
     ) {
         var amount by remember { mutableStateOf("") }
         var selectedCategory by remember { mutableStateOf("") }
         var selectedDate by remember { mutableStateOf(System.currentTimeMillis()) } // Initialize with current date
         var showCategoryDialog by remember { mutableStateOf(false) }
         var categories by remember { mutableStateOf(initialCategories) } // Use mutable state for categories
-
+        val isDarkMode = isSystemInDarkTheme()
 
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Add Expense") },
+            containerColor = if (isDarkMode) Color(rgb(40, 40, 40)) else Color(249,249,249),
+            title = { Text("Add Expense", color = if(isDarkMode) Color.White else Color.Black) },
             text = {
                 Column {
                     TextField(
@@ -703,6 +719,8 @@ class MainActivity : ComponentActivity() {
                         onValueChange = { amount = it },
                         label = { Text("Amount") },
                     )
+
+                    Spacer(Modifier.padding(vertical = 5.dp))
 
                     // Button to open category selection dialog
                     Button(onClick = {
@@ -712,7 +730,7 @@ class MainActivity : ComponentActivity() {
                         }
                         showCategoryDialog = true // Show the dialog after fetching
                     }) {
-                        Text(if (selectedCategory.isEmpty()) "Select Category" else selectedCategory)
+                        Text(if (selectedCategory.isEmpty()) "Select Category" else selectedCategory, color = Color.White)
                     }
 
                     // Button to open date picker dialog
@@ -736,7 +754,7 @@ class MainActivity : ComponentActivity() {
                         )
                         datePickerDialog.show()
                     }) {
-                        Text("Select Date: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(selectedDate))}")
+                        Text("Select Date: ${SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(selectedDate))}", color=Color.White)
                     }
                 }
             },
@@ -762,12 +780,13 @@ class MainActivity : ComponentActivity() {
                         onDismiss() // Close dialog after adding transaction
                     }
                 }) {
-                    Text("Add")
+                    Text("Add", color = if(isDarkMode) Color.White else Purple40)
+
                 }
             },
             dismissButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text("Cancel", color = if(isDarkMode) Color.White else Purple40)
                 }
             }
         )
@@ -791,21 +810,24 @@ class MainActivity : ComponentActivity() {
         onSelectCategory: (String) -> Unit,
         onDismiss: () -> Unit
     ) {
+        val isDarkMode = isSystemInDarkTheme()
+
         AlertDialog(
             onDismissRequest = onDismiss,
+            containerColor = if (isDarkMode) Color(rgb(40, 40, 40)) else Color(249,249,249),
             title = { Text("Select Category") },
             text = {
                 LazyColumn {
                     items(categories) { category ->
                         TextButton(onClick = { onSelectCategory(category) }) {
-                            Text(category)
+                            Text(category, color = if(isDarkMode) Color.White else Purple40)
                         }
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Close")
+                    Text("Close",color = if(isDarkMode) Color.White else Purple40)
                 }
             }
         )

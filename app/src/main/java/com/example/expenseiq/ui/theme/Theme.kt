@@ -1,8 +1,5 @@
 package com.example.expenseiq.ui.theme
 
-import android.app.Activity
-import android.graphics.ColorSpace
-import android.graphics.ColorSpace.Rgb
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -21,8 +18,6 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Purple40,
     surface = Color.Black,
     background = Color.Black,
-    onBackground = Color.White,
-
 
 )
 

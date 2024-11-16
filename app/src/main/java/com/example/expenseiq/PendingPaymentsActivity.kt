@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.expenseiq.ui.theme.ExpenseIQTheme
+import com.example.expenseiq.ui.theme.Purple40
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,7 +33,7 @@ class PendingPaymentsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            ExpenseIQTheme {
                 PendingPaymentsScreen()
             }
         }
@@ -79,10 +81,10 @@ class PendingPaymentsActivity : ComponentActivity() {
                 if (pendingPayments.isEmpty()) {
                     // Show "No Pending Payments" message
                     Text(
-                        text = "No Pending Expenses",
+                        text = "No Pending Expenses \n\n Expenses identified through SMS are shown here",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(50.dp),
+                            .padding(30.dp),
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         textAlign = TextAlign.Center // Center align the text
@@ -126,12 +128,13 @@ class PendingPaymentsActivity : ComponentActivity() {
         onRemove: () -> Unit
     ) {
         var showCategoryDialog by remember { mutableStateOf(false) }
+        val isDarkMode = isSystemInDarkTheme()
 
         Box(
             modifier = Modifier
                 .padding(vertical = 3.dp, horizontal = 16.dp)
                 .background(
-                    Color(rgb(242, 242, 242)),
+                    if(isDarkMode) Color(rgb(40, 40, 43)) else Color(rgb(242, 242, 242)),
                     shape = MaterialTheme.shapes.small
                 )
         ){
@@ -146,14 +149,14 @@ class PendingPaymentsActivity : ComponentActivity() {
                 // Display the date on the left
                 Text(
                     text = payment.date,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(start = 5.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
                 // Display the amount in the center
                 Text(
                     text = "₹ ${payment.amount}",
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f).padding(start=5.dp),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -201,6 +204,7 @@ class PendingPaymentsActivity : ComponentActivity() {
 
         AlertDialog(
             onDismissRequest = onDismiss,
+            containerColor = if (isSystemInDarkTheme()) Color(rgb(40, 40, 40)) else Color(249,249,249),
             title = { Text("Edit Amount and Select Category") },
             text = {
                 Column {
@@ -230,7 +234,7 @@ class PendingPaymentsActivity : ComponentActivity() {
                             ) {
                                 Text(
                                     text = category.name,
-                                    color = Color.Black
+                                    color = if (isSystemInDarkTheme()) Color.White else Color.Black
 
                                     //if (selectedCategory == category) MaterialTheme.colorScheme.primary
                                     //else MaterialTheme.colorScheme.onSurface
@@ -243,7 +247,7 @@ class PendingPaymentsActivity : ComponentActivity() {
             confirmButton = {
                 Row {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text("Cancel", color = if(isSystemInDarkTheme()) Color.White else Purple40)
                     }
                     TextButton(onClick = {
                         selectedCategory?.let { category ->
@@ -251,7 +255,7 @@ class PendingPaymentsActivity : ComponentActivity() {
                             onDismiss() // Close dialog after selection
                         }
                     }) {
-                        Text("Add")
+                        Text("Add",color = if(isSystemInDarkTheme()) Color.White else Purple40 )
                     }
                 }
             }

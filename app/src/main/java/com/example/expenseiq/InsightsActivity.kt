@@ -1,10 +1,12 @@
 package com.example.expenseiq
 
+import android.graphics.Color.rgb
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -19,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.expenseiq.ui.theme.ExpenseIQTheme
+import com.example.expenseiq.ui.theme.Purple40
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
@@ -40,7 +43,7 @@ class InsightsActivity : ComponentActivity() {
         db = AppDatabase.getDatabase(this)
 
         setContent {
-            MaterialTheme {
+            ExpenseIQTheme {
                 InsightsScreen()
             }
         }
@@ -104,7 +107,7 @@ class InsightsActivity : ComponentActivity() {
                             label = "Month",
                             options = months,
                             selectedOption = selectedMonth,
-                            onOptionSelected = { selectedMonth = it }
+                            onOptionSelected = { selectedMonth = it },
                         )
 
                         // Year Dropdown
@@ -126,7 +129,7 @@ class InsightsActivity : ComponentActivity() {
 
                             Text(
                                 "PieChart Breakdown",
-                                color = Color.Black,
+                                color = if (isSystemInDarkTheme()) Color.White else Color.Black,
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
                                 modifier = Modifier.padding(bottom = 10.dp)
                             )
@@ -140,16 +143,19 @@ class InsightsActivity : ComponentActivity() {
                                 ExpensePieChart(pieData = pieData)
                             }
 
+                            Spacer(Modifier.padding(vertical = 10.dp))
+
                             // Display Average Daily Expense
                             Text(
                                 text = "Average Daily Expense",
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
-                                modifier = Modifier.padding(top = 40.dp)
+                                modifier = Modifier.padding(top = 40.dp),
+                                color = if (isSystemInDarkTheme()) Purple40 else Color.Black
                             )
                             Box(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp, horizontal = 16.dp)
-                                    .background(Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
+                                    .background(if (isSystemInDarkTheme()) Color(rgb(40, 40, 43)) else Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
                                     .padding(5.dp)
                             ){
                             Text(
@@ -161,14 +167,15 @@ class InsightsActivity : ComponentActivity() {
                             // Display Highest Expense Day
                             highestExpenseDay?.let { (day, amount) ->
                                 Text(
-                                    text = "Highest Expense Day of the Month",
+                                    text = "Highest Expense Day",
                                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
-                                    modifier = Modifier.padding(top=10.dp, bottom = 1.dp)
+                                    modifier = Modifier.padding(top=10.dp, bottom = 1.dp),
+                                    color = if (isSystemInDarkTheme()) Purple40 else Color.Black
                                 )
                                 Box(
                                     modifier = Modifier
                                         .padding(vertical = 8.dp, horizontal = 16.dp)
-                                        .background(Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
+                                        .background(if (isSystemInDarkTheme()) Color(rgb(40, 40, 43)) else Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
                                         .padding(5.dp)
                                 ){
                                 Text(
@@ -186,18 +193,19 @@ class InsightsActivity : ComponentActivity() {
                             Text(
                                 text = "All Time Expense",
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
-                                modifier = Modifier.padding(top = 10.dp)
+                                modifier = Modifier.padding(top = 10.dp),
+                                color = if (isSystemInDarkTheme()) Purple40 else Color.Black
                             )
                             Box(
                                 modifier = Modifier
                                     .padding(vertical = 8.dp, horizontal = 16.dp)
-                                    .background(Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
-                                    .padding(top=5.dp)
+                                    .background(if (isSystemInDarkTheme()) Color(rgb(40, 40, 43)) else Color(0xFFD3B7E7), shape = MaterialTheme.shapes.small)
+                                    //.padding(top=5.dp)
                             ){
                                 Text(
                                     text = "₹${"%.2f".format(entireTotalExpense)}",
                                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
-                                    modifier = Modifier.padding(top = 0.dp)
+                                    modifier = Modifier.padding(vertical = 5.dp,horizontal = 5.dp)
                             )}
                             Spacer(Modifier.padding(bottom=30.dp))
                         }
@@ -213,7 +221,7 @@ class InsightsActivity : ComponentActivity() {
 
         Box {
             OutlinedButton(onClick = { expanded = true }) {
-                Text("$label: $selectedOption")
+                Text("$label: $selectedOption",color = if (isSystemInDarkTheme()) Color.White else Purple40)
             }
             DropdownMenu(
                 expanded = expanded,
@@ -234,6 +242,8 @@ class InsightsActivity : ComponentActivity() {
 
     @Composable
     fun ExpensePieChart(pieData: List<PieEntry>) {
+
+        val isSystemInDarkTheme = isSystemInDarkTheme()
         AndroidView(
             factory = { context ->
                 PieChart(context).apply {
@@ -261,6 +271,7 @@ class InsightsActivity : ComponentActivity() {
                         formSize = 10f // Adjust the size of color indicators
                         xEntrySpace = 10f // Space between legend entries
                         yEntrySpace = 10f
+                        setTextColor(if (isSystemInDarkTheme ) Color.White.toArgb() else Color.Black.toArgb())
                     }
                 }
             },
@@ -304,10 +315,12 @@ class InsightsActivity : ComponentActivity() {
 
                 pieChart.invalidate() // Refresh chart with new data
                 pieChart.animateY(800)
+                pieChart.setHoleColor(if (isSystemInDarkTheme ) Color.Black.toArgb() else Color.White.toArgb())
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(330.dp)
+
         )
     }
 
